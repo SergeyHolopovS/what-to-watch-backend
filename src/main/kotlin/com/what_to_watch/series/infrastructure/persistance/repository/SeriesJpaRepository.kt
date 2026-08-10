@@ -1,0 +1,20 @@
+package com.what_to_watch.series.infrastructure.persistance.repository
+
+import com.what_to_watch.series.infrastructure.persistance.entity.SeriesJpaEntity
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import java.util.UUID
+
+interface SeriesJpaRepository : JpaRepository<SeriesJpaEntity, UUID> {
+
+    @Query(
+        value = "SELECT * FROM series_jpa_entity WHERE rating = 0 ORDER BY RANDOM() LIMIT 1",
+        nativeQuery = true,
+    )
+    fun findRandomWithZeroRating(): SeriesJpaEntity?
+
+    fun existsByTitle(title: String): Boolean
+
+    fun findByTitleContainingIgnoreCase(title: String): List<SeriesJpaEntity>
+
+}

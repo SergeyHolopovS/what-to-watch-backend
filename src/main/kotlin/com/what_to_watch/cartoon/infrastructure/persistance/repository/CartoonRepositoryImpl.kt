@@ -13,10 +13,13 @@ class CartoonRepositoryImpl(
     private val cartoonMapper: CartoonMapper,
 ) : CartoonRepository {
 
-    override fun addCartoon(title: String, releaseYear: Int): Cartoon {
+    override fun addCartoon(title: String, releaseYear: Int, genre: String, duration: Int, type: String): Cartoon {
         val entity = CartoonJpaEntity(
             title = title,
             releaseYear = releaseYear,
+            genre = genre,
+            duration = duration,
+            type = type,
         )
         return cartoonMapper.toModel(cartoonJpaRepository.save(entity))
     }

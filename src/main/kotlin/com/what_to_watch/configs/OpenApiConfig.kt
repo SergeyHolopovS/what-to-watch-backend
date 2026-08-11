@@ -38,6 +38,10 @@ import org.springframework.context.annotation.Configuration
             name = SERIES_TAG,
             description = "Каталог сериалов: поиск по названию, случайный выбор и оценка",
         ),
+        Tag(
+            name = STATS_TAG,
+            description = "Сводная статистика по каталогу",
+        ),
     ],
 )
 @SecuritySchemes(
@@ -63,6 +67,7 @@ const val USERS_TAG = "Пользователь"
 const val TOKENS_TAG = "Токены"
 const val CARTOONS_TAG = "Мультфильмы"
 const val SERIES_TAG = "Сериалы"
+const val STATS_TAG = "Статистика"
 
 const val COOKIE_AUTH = "cookieAuth"
 const val BEARER_AUTH = "bearerAuth"

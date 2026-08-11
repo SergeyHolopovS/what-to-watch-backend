@@ -13,10 +13,13 @@ class SeriesRepositoryImpl(
     private val seriesMapper: SeriesMapper,
 ) : SeriesRepository {
 
-    override fun addSeries(title: String, releaseYear: Int): Series {
+    override fun addSeries(title: String, releaseYear: Int, genre: String, duration: Int, type: String): Series {
         val entity = SeriesJpaEntity(
             title = title,
             releaseYear = releaseYear,
+            genre = genre,
+            duration = duration,
+            type = type,
         )
         return seriesMapper.toModel(seriesJpaRepository.save(entity))
     }

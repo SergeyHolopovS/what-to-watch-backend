@@ -7,4 +7,7 @@ data class Series(
     val title: String,
     val releaseYear: Int,
     val rating: Int,
+    val genre: String,
+    val duration: Int,
+    val type: String,
 )

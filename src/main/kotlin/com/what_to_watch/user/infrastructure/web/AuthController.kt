@@ -1,13 +1,12 @@
 package com.what_to_watch.user.infrastructure.web
 
 import com.what_to_watch.configs.AUTH_TAG
+import com.what_to_watch.configs.FrontendConfig
 import com.what_to_watch.exceptions.user.DiscordAuthException
 import com.what_to_watch.tokens.infrastructure.web.cookies.TokenCookieService
 import com.what_to_watch.user.application.usecase.discordauth.AuthenticateViaDiscordCommand
 import com.what_to_watch.user.application.usecase.discordauth.AuthenticateViaDiscordUseCase
 import com.what_to_watch.user.domain.gateway.DiscordOAuthGateway
-import com.what_to_watch.user.infrastructure.mappers.UserMapper
-import com.what_to_watch.user.infrastructure.web.dto.response.UserDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
@@ -31,7 +30,7 @@ class AuthController(
     private val discordOAuthGateway: DiscordOAuthGateway,
     private val authenticateViaDiscordUseCase: AuthenticateViaDiscordUseCase,
     private val tokenCookieService: TokenCookieService,
-    private val userMapper: UserMapper,
+    private val frontendConfig: FrontendConfig,
 ) {
 
     private val random = SecureRandom()
@@ -59,11 +58,12 @@ class AuthController(
         summary = "Колбэк Discord: проверка вайтлиста и выдача токенов",
         description = "Обменивает код на данные аккаунта Discord, проверяет discordId " +
             "по вайтлисту и только после этого создаёт аккаунт при первом входе. " +
-            "Пара токенов уходит в HttpOnly cookie, в теле — данные пользователя. " +
+            "Пара токенов уходит в HttpOnly cookie, после чего браузер редиректится на " +
+            "frontend.redirect-uri. Данные пользователя доступны там через GET /users/me. " +
             "Вызывается самим Discord, вручную дёргать не нужно.",
     )
     @ApiResponses(
-        ApiResponse(responseCode = "200", description = "Cookie с токенами установлены"),
+        ApiResponse(responseCode = "302", description = "Cookie с токенами установлены, редирект на фронтенд"),
         ApiResponse(responseCode = "401", description = "Неверный state или ошибка обмена кода"),
         ApiResponse(responseCode = "403", description = "discordId отсутствует в вайтлисте"),
     )
@@ -72,17 +72,19 @@ class AuthController(
         @RequestParam code: String,
         @RequestParam state: String,
         session: HttpSession,
-    ): ResponseEntity<UserDto> {
+    ): ResponseEntity<Void> {
         verifyState(state, session)
 
         val result = authenticateViaDiscordUseCase.execute(
             AuthenticateViaDiscordCommand(code = code)
         )
 
-        // Токены отдаём только в HttpOnly cookie: в теле ответа их нет,
-        // чтобы до них не мог добраться javascript на странице
+        // Токены отдаём только в HttpOnly cookie, в теле их нет — до них не может
+        // добраться javascript на странице. Сами данные пользователя фронтенд
+        // забирает отдельным вызовом GET /users/me после редиректа.
         return ResponseEntity
-            .ok()
+            .status(HttpStatus.FOUND)
+            .location(URI.create(frontendConfig.redirectUri))
             .header(
                 HttpHeaders.SET_COOKIE,
                 tokenCookieService.accessTokenCookie(result.accessToken).toString(),
@@ -91,7 +93,7 @@ class AuthController(
                 HttpHeaders.SET_COOKIE,
                 tokenCookieService.refreshTokenCookie(result.refreshToken).toString(),
             )
-            .body(userMapper.toDto(result.user))
+            .build()
     }
 
     private fun generateState(): String {

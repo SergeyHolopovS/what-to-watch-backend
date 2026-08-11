@@ -20,6 +20,9 @@ interface CartoonMapper {
             title = model.title,
             releaseYear = model.releaseYear,
             rating = model.rating,
+            genre = model.genre,
+            duration = model.duration,
+            type = model.type,
         )
 
     fun toDto(model: Cartoon): CartoonDto

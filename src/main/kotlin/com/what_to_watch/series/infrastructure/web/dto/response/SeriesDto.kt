@@ -7,4 +7,7 @@ data class SeriesDto(
     val title: String,
     val releaseYear: Int,
     val rating: Int,
+    val genre: String,
+    val duration: Int,
+    val type: String,
 )

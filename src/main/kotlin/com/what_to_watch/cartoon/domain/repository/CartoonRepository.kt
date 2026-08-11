@@ -5,7 +5,7 @@ import java.util.UUID
 
 interface CartoonRepository {
 
-    fun addCartoon(title: String, releaseYear: Int): Cartoon
+    fun addCartoon(title: String, releaseYear: Int, genre: String, duration: Int, type: String): Cartoon
 
     fun saveCartoon(cartoon: Cartoon): Cartoon
 

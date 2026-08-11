@@ -14,7 +14,9 @@ class CreateCartoonUseCase (
         if (cartoonRepository.existsByTitle(command.title)) {
             throw CartoonAlreadyExistsException(command.title)
         }
-        return cartoonRepository.addCartoon(command.title, command.releaseYear)
+        return cartoonRepository.addCartoon(
+            command.title, command.releaseYear, command.genre, command.duration, command.type,
+        )
     }
 
 }

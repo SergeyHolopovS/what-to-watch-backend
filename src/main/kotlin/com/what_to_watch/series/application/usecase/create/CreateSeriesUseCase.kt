@@ -14,7 +14,9 @@ class CreateSeriesUseCase (
         if (seriesRepository.existsByTitle(command.title)) {
             throw SeriesAlreadyExistsException(command.title)
         }
-        return seriesRepository.addSeries(command.title, command.releaseYear)
+        return seriesRepository.addSeries(
+            command.title, command.releaseYear, command.genre, command.duration, command.type,
+        )
     }
 
 }

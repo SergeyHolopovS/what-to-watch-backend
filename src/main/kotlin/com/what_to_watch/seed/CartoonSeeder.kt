@@ -15,11 +15,11 @@ class CartoonSeeder(
     private val logger = KotlinLogging.logger {}
 
     override fun run(vararg args: String) {
-        val added = FAKE_CARTOONS.count { (title, releaseYear) ->
-            if (cartoonRepository.existsByTitle(title)) {
+        val added = FAKE_CARTOONS.count { fake ->
+            if (cartoonRepository.existsByTitle(fake.title)) {
                 false
             } else {
-                cartoonRepository.addCartoon(title, releaseYear)
+                cartoonRepository.addCartoon(fake.title, fake.releaseYear, fake.genre, fake.duration, fake.type)
                 true
             }
         }
@@ -28,18 +28,26 @@ class CartoonSeeder(
         }
     }
 
+    private data class FakeCartoon(
+        val title: String,
+        val releaseYear: Int,
+        val genre: String,
+        val duration: Int,
+        val type: String,
+    )
+
     private companion object {
         val FAKE_CARTOONS = listOf(
-            "Ну, погоди!" to 1969,
-            "Простоквашино" to 1978,
-            "Ёжик в тумане" to 1975,
-            "Малыш и Карлсон" to 1968,
-            "Ледниковый период" to 2002,
-            "Шрек" to 2001,
-            "История игрушек" to 1995,
-            "В поисках Немо" to 2003,
-            "Головоломка" to 2015,
-            "Тайна Коко" to 2017,
+            FakeCartoon("Ну, погоди!", 1969, "Комедия", 10, "Короткометражный"),
+            FakeCartoon("Простоквашино", 1978, "Комедия", 20, "Короткометражный"),
+            FakeCartoon("Ёжик в тумане", 1975, "Драма", 10, "Короткометражный"),
+            FakeCartoon("Малыш и Карлсон", 1968, "Комедия", 19, "Короткометражный"),
+            FakeCartoon("Ледниковый период", 2002, "Приключения", 81, "Полнометражный"),
+            FakeCartoon("Шрек", 2001, "Комедия", 90, "Полнометражный"),
+            FakeCartoon("История игрушек", 1995, "Приключения", 81, "Полнометражный"),
+            FakeCartoon("В поисках Немо", 2003, "Приключения", 100, "Полнометражный"),
+            FakeCartoon("Головоломка", 2015, "Драма", 95, "Полнометражный"),
+            FakeCartoon("Тайна Коко", 2017, "Драма", 105, "Полнометражный"),
         )
     }
 

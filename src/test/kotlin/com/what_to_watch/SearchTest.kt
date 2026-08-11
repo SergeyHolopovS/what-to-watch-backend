@@ -26,8 +26,8 @@ class SearchTest {
 
     @Test
     fun `поиск мультфильмов по подстроке без учёта регистра`() {
-        cartoonRepository.addCartoon("Ну, погоди!", 1969)
-        cartoonRepository.addCartoon("Простоквашино", 1978)
+        cartoonRepository.addCartoon("Ну, погоди!", 1969, "Комедия", 10, "Короткометражный")
+        cartoonRepository.addCartoon("Простоквашино", 1978, "Комедия", 20, "Короткометражный")
 
         mockMvc.get("/cartoons/search") {
             param("title", "погод")
@@ -47,8 +47,8 @@ class SearchTest {
 
     @Test
     fun `поиск сериалов по подстроке без учёта регистра`() {
-        seriesRepository.addSeries("Во все тяжкие", 2008)
-        seriesRepository.addSeries("Друзья", 1994)
+        seriesRepository.addSeries("Во все тяжкие", 2008, "Драма", 47, "Сериал")
+        seriesRepository.addSeries("Друзья", 1994, "Комедия", 22, "Сериал")
 
         mockMvc.get("/series/search") {
             param("title", "тяжк")

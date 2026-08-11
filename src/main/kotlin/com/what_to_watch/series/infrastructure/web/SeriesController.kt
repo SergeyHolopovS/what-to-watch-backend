@@ -63,6 +63,9 @@ class SeriesController(
         val command = CreateSeriesCommand(
             title = dto.title,
             releaseYear = dto.releaseYear,
+            genre = dto.genre,
+            duration = dto.duration,
+            type = dto.type,
         )
         return seriesMapper.toDto(createSeriesUseCase.execute(command))
     }

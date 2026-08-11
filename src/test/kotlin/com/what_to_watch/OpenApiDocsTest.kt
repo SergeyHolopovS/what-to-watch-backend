@@ -6,6 +6,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import tools.jackson.databind.ObjectMapper
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
@@ -16,6 +17,9 @@ class OpenApiDocsTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
     private fun apiDocs(): String =
         mockMvc.get("/v3/api-docs")
@@ -33,6 +37,7 @@ class OpenApiDocsTest {
             "/auth/callback",
             "/refresh",
             "/users/me",
+            "/stats",
             "/cartoons",
             "/cartoons/search",
             "/cartoons/random",
@@ -52,7 +57,7 @@ class OpenApiDocsTest {
     fun `эндпоинты разложены по категориям и описаны`() {
         val docs = apiDocs()
 
-        listOf("Авторизация", "Пользователь", "Токены", "Мультфильмы", "Сериалы").forEach { tag ->
+        listOf("Авторизация", "Пользователь", "Токены", "Мультфильмы", "Сериалы", "Статистика").forEach { tag ->
             assertTrue(docs.contains(tag), "в документации нет категории $tag")
         }
         listOf(
@@ -63,8 +68,22 @@ class OpenApiDocsTest {
             "Краткая информация о текущем пользователе",
             "Поиск мультфильмов по названию",
             "Поиск сериалов по названию",
+            "Статистика по каталогу",
         ).forEach { summary ->
             assertTrue(docs.contains(summary), "в документации нет описания \"$summary\"")
+        }
+    }
+
+    @Test
+    fun `схемы мультфильма и сериала содержат genre, duration и type`() {
+        val schemas = objectMapper.readTree(apiDocs()).get("components").get("schemas")
+
+        listOf("CartoonDto", "CreateCartoonDto", "SeriesDto", "CreateSeriesDto").forEach { schemaName ->
+            val properties = schemas.get(schemaName)?.get("properties")
+            requireNotNull(properties) { "в документации нет схемы $schemaName" }
+            listOf("genre", "duration", "type").forEach { field ->
+                assertTrue(properties.has(field), "в схеме $schemaName нет поля $field")
+            }
         }
     }
 

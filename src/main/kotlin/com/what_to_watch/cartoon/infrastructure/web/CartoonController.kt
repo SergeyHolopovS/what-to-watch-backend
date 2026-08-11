@@ -63,6 +63,9 @@ class CartoonController(
         val command = CreateCartoonCommand(
             title = dto.title,
             releaseYear = dto.releaseYear,
+            genre = dto.genre,
+            duration = dto.duration,
+            type = dto.type,
         )
         return cartoonMapper.toDto(createCartoonUseCase.execute(command))
     }

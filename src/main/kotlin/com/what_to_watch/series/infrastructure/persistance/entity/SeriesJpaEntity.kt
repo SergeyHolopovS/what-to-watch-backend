@@ -25,4 +25,13 @@ data class SeriesJpaEntity(
     @Column(nullable = false, unique = false)
     val releaseYear: Int,
 
+    @Column(nullable = false)
+    val genre: String,
+
+    @Column(nullable = false)
+    val duration: Int,
+
+    @Column(nullable = false)
+    val type: String,
+
 ) : Serializable

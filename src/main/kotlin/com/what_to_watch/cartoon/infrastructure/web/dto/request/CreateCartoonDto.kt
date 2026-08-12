@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
+import java.util.UUID
 
 data class CreateCartoonDto(
 
@@ -22,5 +23,9 @@ data class CreateCartoonDto(
 
     @field:NotBlank(message = "Тип записи не должен быть пустым")
     val type: String,
+
+    val studioId: UUID? = null,
+
+    val studioName: String? = null,
 
 )

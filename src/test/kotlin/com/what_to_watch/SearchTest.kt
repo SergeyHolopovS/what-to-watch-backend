@@ -2,6 +2,7 @@ package com.what_to_watch
 
 import com.what_to_watch.cartoon.domain.repository.CartoonRepository
 import com.what_to_watch.series.domain.repository.SeriesRepository
+import com.what_to_watch.studio.domain.repository.StudioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
@@ -24,10 +25,14 @@ class SearchTest {
     @Autowired
     private lateinit var seriesRepository: SeriesRepository
 
+    @Autowired
+    private lateinit var studioRepository: StudioRepository
+
     @Test
     fun `поиск мультфильмов по подстроке без учёта регистра`() {
-        cartoonRepository.addCartoon("Ну, погоди!", 1969, "Комедия", 10, "Короткометражный")
-        cartoonRepository.addCartoon("Простоквашино", 1978, "Комедия", 20, "Короткометражный")
+        val studioId = studioRepository.addStudio("Тестовая студия ${System.nanoTime()}").id
+        cartoonRepository.addCartoon("Ну, погоди!", 1969, "Комедия", 10, "Короткометражный", studioId)
+        cartoonRepository.addCartoon("Простоквашино", 1978, "Комедия", 20, "Короткометражный", studioId)
 
         mockMvc.get("/cartoons/search") {
             param("title", "погод")
@@ -47,8 +52,9 @@ class SearchTest {
 
     @Test
     fun `поиск сериалов по подстроке без учёта регистра`() {
-        seriesRepository.addSeries("Во все тяжкие", 2008, "Драма", 47, "Сериал")
-        seriesRepository.addSeries("Друзья", 1994, "Комедия", 22, "Сериал")
+        val studioId = studioRepository.addStudio("Тестовая студия ${System.nanoTime()}").id
+        seriesRepository.addSeries("Во все тяжкие", 2008, "Драма", 47, "Сериал", studioId)
+        seriesRepository.addSeries("Друзья", 1994, "Комедия", 22, "Сериал", studioId)
 
         mockMvc.get("/series/search") {
             param("title", "тяжк")

@@ -10,4 +10,5 @@ data class SeriesDto(
     val genre: String,
     val duration: Int,
     val type: String,
+    val studioId: UUID,
 )

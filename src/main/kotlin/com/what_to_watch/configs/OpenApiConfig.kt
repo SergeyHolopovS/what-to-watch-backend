@@ -42,6 +42,10 @@ import org.springframework.context.annotation.Configuration
             name = STATS_TAG,
             description = "Сводная статистика по каталогу",
         ),
+        Tag(
+            name = STUDIOS_TAG,
+            description = "Каталог студий, выпустивших мультфильмы и сериалы",
+        ),
     ],
 )
 @SecuritySchemes(
@@ -68,6 +72,7 @@ const val TOKENS_TAG = "Токены"
 const val CARTOONS_TAG = "Мультфильмы"
 const val SERIES_TAG = "Сериалы"
 const val STATS_TAG = "Статистика"
+const val STUDIOS_TAG = "Студии"
 
 const val COOKIE_AUTH = "cookieAuth"
 const val BEARER_AUTH = "bearerAuth"

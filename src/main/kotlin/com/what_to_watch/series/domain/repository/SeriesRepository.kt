@@ -5,7 +5,14 @@ import java.util.UUID
 
 interface SeriesRepository {
 
-    fun addSeries(title: String, releaseYear: Int, genre: String, duration: Int, type: String): Series
+    fun addSeries(
+        title: String,
+        releaseYear: Int,
+        genre: String,
+        duration: Int,
+        type: String,
+        studioId: UUID,
+    ): Series
 
     fun saveSeries(series: Series): Series
 

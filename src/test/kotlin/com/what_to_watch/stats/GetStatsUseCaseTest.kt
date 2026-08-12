@@ -58,15 +58,18 @@ class GetStatsUseCaseTest {
 
     private fun cartoon(rating: Int) = Cartoon(
         UUID.randomUUID(), "cartoon-$rating-${UUID.randomUUID()}", 2000, rating, "Драма", 90, "Полнометражный",
+        UUID.randomUUID(),
     )
 
     private fun series(rating: Int) = Series(
         UUID.randomUUID(), "series-$rating-${UUID.randomUUID()}", 2000, rating, "Драма", 45, "Сериал",
+        UUID.randomUUID(),
     )
 
     private class FakeCartoonRepository(private val cartoons: List<Cartoon>) : CartoonRepository {
-        override fun addCartoon(title: String, releaseYear: Int, genre: String, duration: Int, type: String) =
-            throw UnsupportedOperationException()
+        override fun addCartoon(
+            title: String, releaseYear: Int, genre: String, duration: Int, type: String, studioId: UUID,
+        ) = throw UnsupportedOperationException()
         override fun saveCartoon(cartoon: Cartoon) = throw UnsupportedOperationException()
         override fun getCartoon(id: UUID) = throw UnsupportedOperationException()
         override fun getAllCartoons(): List<Cartoon> = cartoons
@@ -77,8 +80,9 @@ class GetStatsUseCaseTest {
     }
 
     private class FakeSeriesRepository(private val series: List<Series>) : SeriesRepository {
-        override fun addSeries(title: String, releaseYear: Int, genre: String, duration: Int, type: String) =
-            throw UnsupportedOperationException()
+        override fun addSeries(
+            title: String, releaseYear: Int, genre: String, duration: Int, type: String, studioId: UUID,
+        ) = throw UnsupportedOperationException()
         override fun saveSeries(series: Series) = throw UnsupportedOperationException()
         override fun getSeries(id: UUID) = throw UnsupportedOperationException()
         override fun getAllSeries(): List<Series> = series

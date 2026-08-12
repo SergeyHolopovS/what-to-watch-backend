@@ -23,6 +23,7 @@ interface SeriesMapper {
             genre = model.genre,
             duration = model.duration,
             type = model.type,
+            studioId = model.studioId,
         )
 
     fun toDto(model: Series): SeriesDto

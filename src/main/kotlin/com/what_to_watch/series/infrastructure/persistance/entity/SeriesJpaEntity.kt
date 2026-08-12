@@ -34,4 +34,7 @@ data class SeriesJpaEntity(
     @Column(nullable = false)
     val type: String,
 
+    @Column(nullable = false)
+    val studioId: UUID,
+
 ) : Serializable

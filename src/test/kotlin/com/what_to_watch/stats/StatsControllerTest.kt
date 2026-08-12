@@ -2,6 +2,7 @@ package com.what_to_watch.stats
 
 import com.what_to_watch.cartoon.domain.repository.CartoonRepository
 import com.what_to_watch.series.domain.repository.SeriesRepository
+import com.what_to_watch.studio.domain.repository.StudioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
@@ -29,6 +30,9 @@ class StatsControllerTest {
     @Autowired
     private lateinit var seriesRepository: SeriesRepository
 
+    @Autowired
+    private lateinit var studioRepository: StudioRepository
+
     /**
      * Контекст и БД общие с другими тестовыми классами, поэтому сверяем не абсолютные
      * значения, а изменение счётчиков после добавления заведомо известных записей.
@@ -37,8 +41,11 @@ class StatsControllerTest {
     fun `доступен без авторизации и отражает добавленные записи`() {
         val before = fetchStats()
 
-        cartoonRepository.addCartoon("Статистика мультфильм ${System.nanoTime()}", 2000, "Драма", 90, "Полнометражный")
-        seriesRepository.addSeries("Статистика сериал ${System.nanoTime()}", 2000, "Драма", 45, "Сериал")
+        val studioId = studioRepository.addStudio("Статистика студия ${System.nanoTime()}").id
+        cartoonRepository.addCartoon(
+            "Статистика мультфильм ${System.nanoTime()}", 2000, "Драма", 90, "Полнометражный", studioId,
+        )
+        seriesRepository.addSeries("Статистика сериал ${System.nanoTime()}", 2000, "Драма", 45, "Сериал", studioId)
 
         val after = fetchStats()
 

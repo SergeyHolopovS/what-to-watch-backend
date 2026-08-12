@@ -66,6 +66,8 @@ class CartoonController(
             genre = dto.genre,
             duration = dto.duration,
             type = dto.type,
+            studioId = dto.studioId,
+            studioName = dto.studioName,
         )
         return cartoonMapper.toDto(createCartoonUseCase.execute(command))
     }

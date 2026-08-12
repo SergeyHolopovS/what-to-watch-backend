@@ -66,6 +66,8 @@ class SeriesController(
             genre = dto.genre,
             duration = dto.duration,
             type = dto.type,
+            studioId = dto.studioId,
+            studioName = dto.studioName,
         )
         return seriesMapper.toDto(createSeriesUseCase.execute(command))
     }

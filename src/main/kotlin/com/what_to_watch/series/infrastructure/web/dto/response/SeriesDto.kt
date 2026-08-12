@@ -1,5 +1,6 @@
 package com.what_to_watch.series.infrastructure.web.dto.response
 
+import java.time.Instant
 import java.util.UUID
 
 data class SeriesDto(
@@ -11,4 +12,5 @@ data class SeriesDto(
     val duration: Int,
     val type: String,
     val studioId: UUID,
+    val createdAt: Instant,
 )

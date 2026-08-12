@@ -3,6 +3,7 @@ package com.what_to_watch.series.infrastructure.persistance.repository
 import com.what_to_watch.series.infrastructure.persistance.entity.SeriesJpaEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import java.util.UUID
 
 interface SeriesJpaRepository : JpaRepository<SeriesJpaEntity, UUID> {
@@ -15,6 +16,12 @@ interface SeriesJpaRepository : JpaRepository<SeriesJpaEntity, UUID> {
 
     fun existsByTitle(title: String): Boolean
 
-    fun findByTitleContainingIgnoreCase(title: String): List<SeriesJpaEntity>
+    @Query(
+        "SELECT s FROM SeriesJpaEntity s " +
+            "WHERE (:title IS NULL OR LOWER(s.title) LIKE LOWER(CONCAT('%', CAST(:title AS string), '%'))) " +
+            "AND (:studioId IS NULL OR s.studioId = :studioId) " +
+            "ORDER BY s.createdAt DESC"
+    )
+    fun search(@Param("title") title: String?, @Param("studioId") studioId: UUID?): List<SeriesJpaEntity>
 
 }

@@ -5,6 +5,7 @@ import com.what_to_watch.cartoon.domain.repository.CartoonRepository
 import com.what_to_watch.series.domain.model.Series
 import com.what_to_watch.series.domain.repository.SeriesRepository
 import com.what_to_watch.stats.application.usecase.getstats.GetStatsUseCase
+import java.time.Instant
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -58,12 +59,12 @@ class GetStatsUseCaseTest {
 
     private fun cartoon(rating: Int) = Cartoon(
         UUID.randomUUID(), "cartoon-$rating-${UUID.randomUUID()}", 2000, rating, "Драма", 90, "Полнометражный",
-        UUID.randomUUID(),
+        UUID.randomUUID(), Instant.now(),
     )
 
     private fun series(rating: Int) = Series(
         UUID.randomUUID(), "series-$rating-${UUID.randomUUID()}", 2000, rating, "Драма", 45, "Сериал",
-        UUID.randomUUID(),
+        UUID.randomUUID(), Instant.now(),
     )
 
     private class FakeCartoonRepository(private val cartoons: List<Cartoon>) : CartoonRepository {
@@ -76,7 +77,7 @@ class GetStatsUseCaseTest {
         override fun getRandomUnratedCartoon() = throw UnsupportedOperationException()
         override fun deleteCartoon(id: UUID) = throw UnsupportedOperationException()
         override fun existsByTitle(title: String) = throw UnsupportedOperationException()
-        override fun searchByTitle(query: String) = throw UnsupportedOperationException()
+        override fun search(title: String?, studioId: UUID?) = throw UnsupportedOperationException()
     }
 
     private class FakeSeriesRepository(private val series: List<Series>) : SeriesRepository {
@@ -89,7 +90,7 @@ class GetStatsUseCaseTest {
         override fun getRandomUnratedSeries() = throw UnsupportedOperationException()
         override fun deleteSeries(id: UUID) = throw UnsupportedOperationException()
         override fun existsByTitle(title: String) = throw UnsupportedOperationException()
-        override fun searchByTitle(query: String) = throw UnsupportedOperationException()
+        override fun search(title: String?, studioId: UUID?) = throw UnsupportedOperationException()
     }
 
 }

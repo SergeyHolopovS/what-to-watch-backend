@@ -55,7 +55,7 @@ class CartoonRepositoryImpl(
     override fun existsByTitle(title: String): Boolean =
         cartoonJpaRepository.existsByTitle(title)
 
-    override fun searchByTitle(query: String): List<Cartoon> =
-        cartoonJpaRepository.findByTitleContainingIgnoreCase(query).map(cartoonMapper::toModel)
+    override fun search(title: String?, studioId: UUID?): List<Cartoon> =
+        cartoonJpaRepository.search(title, studioId).map(cartoonMapper::toModel)
 
 }

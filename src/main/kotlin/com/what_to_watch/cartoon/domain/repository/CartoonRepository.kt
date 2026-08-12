@@ -26,6 +26,6 @@ interface CartoonRepository {
 
     fun existsByTitle(title: String): Boolean
 
-    fun searchByTitle(query: String): List<Cartoon>
+    fun search(title: String?, studioId: UUID?): List<Cartoon>
 
 }

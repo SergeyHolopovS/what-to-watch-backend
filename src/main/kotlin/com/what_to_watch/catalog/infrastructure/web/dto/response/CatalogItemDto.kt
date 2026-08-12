@@ -1,9 +1,14 @@
-package com.what_to_watch.cartoon.infrastructure.web.dto.response
+package com.what_to_watch.catalog.infrastructure.web.dto.response
 
 import java.time.Instant
 import java.util.UUID
 
-data class CartoonDto(
+enum class CatalogContentType {
+    CARTOON,
+    SERIES,
+}
+
+data class CatalogItemDto(
     val id: UUID,
     val title: String,
     val releaseYear: Int,
@@ -13,4 +18,5 @@ data class CartoonDto(
     val type: String,
     val studioId: UUID,
     val createdAt: Instant,
+    val contentType: CatalogContentType,
 )

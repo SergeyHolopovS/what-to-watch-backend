@@ -79,11 +79,14 @@ class SeriesController(
 
     @Operation(
         summary = "Поиск сериалов по названию",
-        description = "Ищет по подстроке в title, без учёта регистра.",
+        description = "Ищет по подстроке в title, без учёта регистра. Опционально фильтрует по studioId.",
     )
     @GetMapping("/search")
-    fun searchSeries(@RequestParam @NotBlank title: String): List<SeriesDto> =
-        seriesMapper.toDto(searchSeriesUseCase.execute(title))
+    fun searchSeries(
+        @RequestParam @NotBlank title: String,
+        @RequestParam(required = false) studioId: UUID?,
+    ): List<SeriesDto> =
+        seriesMapper.toDto(searchSeriesUseCase.execute(title, studioId))
 
     @Operation(
         summary = "Случайный неоценённый сериал",

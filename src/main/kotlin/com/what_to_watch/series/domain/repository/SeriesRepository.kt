@@ -26,6 +26,6 @@ interface SeriesRepository {
 
     fun existsByTitle(title: String): Boolean
 
-    fun searchByTitle(query: String): List<Series>
+    fun search(title: String?, studioId: UUID?): List<Series>
 
 }

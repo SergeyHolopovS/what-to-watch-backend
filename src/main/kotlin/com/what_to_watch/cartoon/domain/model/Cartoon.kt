@@ -1,5 +1,6 @@
 package com.what_to_watch.cartoon.domain.model
 
+import java.time.Instant
 import java.util.UUID
 
 data class Cartoon(
@@ -11,4 +12,5 @@ data class Cartoon(
     val duration: Int,
     val type: String,
     val studioId: UUID,
+    val createdAt: Instant,
 )

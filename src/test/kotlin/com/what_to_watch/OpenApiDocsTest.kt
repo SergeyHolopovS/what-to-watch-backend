@@ -39,7 +39,6 @@ class OpenApiDocsTest {
             "/users/me",
             "/stats",
             "/cartoons",
-            "/cartoons/search",
             "/cartoons/random",
             "/cartoons/{id}",
             "/cartoons/{id}/rating",
@@ -66,7 +65,6 @@ class OpenApiDocsTest {
             "Обновить пару токенов",
             "Колбэк Discord: проверка вайтлиста и выдача токенов",
             "Краткая информация о текущем пользователе",
-            "Поиск мультфильмов по названию",
             "Поиск сериалов по названию",
             "Статистика по каталогу",
         ).forEach { summary ->

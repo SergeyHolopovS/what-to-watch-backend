@@ -5,7 +5,9 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import org.hibernate.annotations.CreationTimestamp
 import java.io.Serializable
+import java.time.Instant
 import java.util.UUID
 
 @Entity
@@ -36,5 +38,9 @@ data class SeriesJpaEntity(
 
     @Column(nullable = false)
     val studioId: UUID,
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    val createdAt: Instant? = null,
 
 ) : Serializable

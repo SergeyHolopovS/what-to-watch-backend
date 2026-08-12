@@ -1,5 +1,6 @@
 package com.what_to_watch.series.domain.model
 
+import java.time.Instant
 import java.util.UUID
 
 data class Series(
@@ -11,4 +12,5 @@ data class Series(
     val duration: Int,
     val type: String,
     val studioId: UUID,
+    val createdAt: Instant,
 )

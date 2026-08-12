@@ -24,6 +24,7 @@ interface SeriesMapper {
             duration = model.duration,
             type = model.type,
             studioId = model.studioId,
+            createdAt = model.createdAt,
         )
 
     fun toDto(model: Series): SeriesDto

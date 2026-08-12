@@ -29,24 +29,17 @@ class SearchTest {
     private lateinit var studioRepository: StudioRepository
 
     @Test
-    fun `поиск мультфильмов по подстроке без учёта регистра`() {
+    fun `поиск мультфильмов по подстроке без учёта регистра через каталог`() {
         val studioId = studioRepository.addStudio("Тестовая студия ${System.nanoTime()}").id
-        cartoonRepository.addCartoon("Ну, погоди!", 1969, "Комедия", 10, "Короткометражный", studioId)
-        cartoonRepository.addCartoon("Простоквашино", 1978, "Комедия", 20, "Короткометражный", studioId)
+        val title = "Ну, погоди! ${System.nanoTime()}"
+        cartoonRepository.addCartoon(title, 1969, "Комедия", 10, "Короткометражный", studioId)
 
-        mockMvc.get("/cartoons/search") {
-            param("title", "погод")
+        mockMvc.get("/catalog") {
+            param("query", title.uppercase())
         }.andExpect {
             status { isOk() }
             jsonPath("$.length()") { value(1) }
-            jsonPath("$[0].title") { value("Ну, погоди!") }
-        }
-
-        mockMvc.get("/cartoons/search") {
-            param("title", "ПОГОД")
-        }.andExpect {
-            status { isOk() }
-            jsonPath("$.length()") { value(1) }
+            jsonPath("$[0].title") { value(title) }
         }
     }
 
@@ -66,19 +59,20 @@ class SearchTest {
     }
 
     @Test
-    fun `пустой запрос отклоняется`() {
-        mockMvc.get("/cartoons/search") {
-            param("title", "")
-        }.andExpect { status { isBadRequest() } }
-    }
+    fun `поиск сериалов дополнительно фильтруется по studioId`() {
+        val matchingStudioId = studioRepository.addStudio("Студия A ${System.nanoTime()}").id
+        val otherStudioId = studioRepository.addStudio("Студия B ${System.nanoTime()}").id
+        val title = "Общий сериал ${System.nanoTime()}"
+        seriesRepository.addSeries(title, 2020, "Драма", 40, "Сериал", matchingStudioId)
+        seriesRepository.addSeries(title + " второй", 2020, "Драма", 40, "Сериал", otherStudioId)
 
-    @Test
-    fun `отсутствие ни одного совпадения возвращает пустой список`() {
-        mockMvc.get("/cartoons/search") {
-            param("title", "несуществующий-мультфильм-xyz")
+        mockMvc.get("/series/search") {
+            param("title", title)
+            param("studioId", matchingStudioId.toString())
         }.andExpect {
             status { isOk() }
-            jsonPath("$.length()") { value(0) }
+            jsonPath("$.length()") { value(1) }
+            jsonPath("$[0].studioId") { value(matchingStudioId.toString()) }
         }
     }
 

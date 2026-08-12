@@ -55,7 +55,7 @@ class SeriesRepositoryImpl(
     override fun existsByTitle(title: String): Boolean =
         seriesJpaRepository.existsByTitle(title)
 
-    override fun searchByTitle(query: String): List<Series> =
-        seriesJpaRepository.findByTitleContainingIgnoreCase(query).map(seriesMapper::toModel)
+    override fun search(title: String?, studioId: UUID?): List<Series> =
+        seriesJpaRepository.search(title, studioId).map(seriesMapper::toModel)
 
 }

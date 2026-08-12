@@ -24,6 +24,7 @@ interface CartoonMapper {
             duration = model.duration,
             type = model.type,
             studioId = model.studioId,
+            createdAt = model.createdAt,
         )
 
     fun toDto(model: Cartoon): CartoonDto

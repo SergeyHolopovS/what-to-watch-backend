@@ -18,16 +18,29 @@ class CatalogController(
 ) {
 
     @Operation(
-        summary = "Поиск по мультфильмам и сериалам",
-        description = "Объединённый список мультфильмов и сериалов, отсортированный по дате добавления " +
-            "(сначала новые). Фильтруется по подстроке в названии (query) и по студии (studioId): " +
+        summary = "Поиск по сериалам",
+        description = "Список сериалов, отсортированный по дате добавления (сначала новые). " +
+            "Фильтруется по подстроке в названии (query) и по студии (studioId): " +
             "если studioId не парсится как UUID, он трактуется как название студии и по нему создаётся новая студия.",
     )
-    @GetMapping
-    fun search(
+    @GetMapping("/series")
+    fun searchSeries(
         @RequestParam(required = false) query: String?,
         @RequestParam(required = false) studioId: String?,
     ): List<CatalogItemDto> =
-        searchCatalogUseCase.execute(query, studioId)
+        searchCatalogUseCase.searchSeries(query, studioId)
+
+    @Operation(
+        summary = "Поиск по мультфильмам",
+        description = "Список мультфильмов, отсортированный по дате добавления (сначала новые). " +
+            "Фильтруется по подстроке в названии (query) и по студии (studioId): " +
+            "если studioId не парсится как UUID, он трактуется как название студии и по нему создаётся новая студия.",
+    )
+    @GetMapping("/cartoons")
+    fun searchCartoons(
+        @RequestParam(required = false) query: String?,
+        @RequestParam(required = false) studioId: String?,
+    ): List<CatalogItemDto> =
+        searchCatalogUseCase.searchCartoons(query, studioId)
 
 }

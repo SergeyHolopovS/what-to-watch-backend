@@ -34,7 +34,7 @@ class SearchTest {
         val title = "Ну, погоди! ${System.nanoTime()}"
         cartoonRepository.addCartoon(title, 1969, "Комедия", 10, "Короткометражный", studioId)
 
-        mockMvc.get("/catalog") {
+        mockMvc.get("/catalog/cartoons") {
             param("query", title.uppercase())
         }.andExpect {
             status { isOk() }

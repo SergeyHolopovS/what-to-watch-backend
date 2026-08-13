@@ -1,8 +1,9 @@
 package com.what_to_watch.catalog.application.usecase.search
 
+import com.what_to_watch.cartoon.domain.model.Cartoon
 import com.what_to_watch.cartoon.domain.repository.CartoonRepository
-import com.what_to_watch.catalog.infrastructure.web.dto.response.CatalogContentType
 import com.what_to_watch.catalog.infrastructure.web.dto.response.CatalogItemDto
+import com.what_to_watch.series.domain.model.Series
 import com.what_to_watch.series.domain.repository.SeriesRepository
 import com.what_to_watch.studio.application.usecase.resolve.ResolveStudioUseCase
 import org.springframework.stereotype.Component
@@ -19,39 +20,18 @@ class SearchCatalogUseCase(
     private val resolveStudioUseCase: ResolveStudioUseCase,
 ) {
 
-    fun execute(query: String?, studioIdOrName: String?): List<CatalogItemDto> {
+    fun searchSeries(query: String?, studioIdOrName: String?): List<CatalogItemDto> {
         val studioId = resolveStudioParam(studioIdOrName)
+        return seriesRepository.search(query, studioId)
+            .map { it.toCatalogItemDto() }
+            .sortedByDescending { it.createdAt }
+    }
 
-        val cartoons = cartoonRepository.search(query, studioId).map {
-            CatalogItemDto(
-                id = it.id,
-                title = it.title,
-                releaseYear = it.releaseYear,
-                rating = it.rating,
-                genre = it.genre,
-                duration = it.duration,
-                type = it.type,
-                studioId = it.studioId,
-                createdAt = it.createdAt,
-                contentType = CatalogContentType.CARTOON,
-            )
-        }
-        val series = seriesRepository.search(query, studioId).map {
-            CatalogItemDto(
-                id = it.id,
-                title = it.title,
-                releaseYear = it.releaseYear,
-                rating = it.rating,
-                genre = it.genre,
-                duration = it.duration,
-                type = it.type,
-                studioId = it.studioId,
-                createdAt = it.createdAt,
-                contentType = CatalogContentType.SERIES,
-            )
-        }
-
-        return (cartoons + series).sortedByDescending { it.createdAt }
+    fun searchCartoons(query: String?, studioIdOrName: String?): List<CatalogItemDto> {
+        val studioId = resolveStudioParam(studioIdOrName)
+        return cartoonRepository.search(query, studioId)
+            .map { it.toCatalogItemDto() }
+            .sortedByDescending { it.createdAt }
     }
 
     private fun resolveStudioParam(param: String?): UUID? {
@@ -63,5 +43,29 @@ class SearchCatalogUseCase(
             resolveStudioUseCase.execute(null, param)
         }
     }
+
+    private fun Series.toCatalogItemDto() = CatalogItemDto(
+        id = id,
+        title = title,
+        releaseYear = releaseYear,
+        rating = rating,
+        genre = genre,
+        duration = duration,
+        type = type,
+        studioId = studioId,
+        createdAt = createdAt,
+    )
+
+    private fun Cartoon.toCatalogItemDto() = CatalogItemDto(
+        id = id,
+        title = title,
+        releaseYear = releaseYear,
+        rating = rating,
+        genre = genre,
+        duration = duration,
+        type = type,
+        studioId = studioId,
+        createdAt = createdAt,
+    )
 
 }

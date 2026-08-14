@@ -13,12 +13,18 @@ class TokenCookieService(
     private val cookieConfig: CookieConfig,
 ) {
 
+    /**
+     * Max-Age берём от refresh-, а не access-токена: /refresh читает access
+     * токен из cookie именно после его истечения, чтобы сверить пару токенов.
+     * Если бы cookie умирала вместе с access-токеном, браузер стирал бы её
+     * ровно к моменту, когда она нужна для рефреша.
+     */
     fun accessTokenCookie(token: String): ResponseCookie =
         build(
             name = cookieConfig.accessTokenName,
             value = token,
             path = ROOT_PATH,
-            maxAge = Duration.ofSeconds(jwtConfig.accessTokenExpiration),
+            maxAge = Duration.ofSeconds(jwtConfig.refreshTokenExpiration),
         )
 
     /**

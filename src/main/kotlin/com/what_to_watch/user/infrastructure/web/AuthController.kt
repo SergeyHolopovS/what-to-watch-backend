@@ -7,9 +7,13 @@ import com.what_to_watch.tokens.infrastructure.web.cookies.TokenCookieService
 import com.what_to_watch.user.application.usecase.discordauth.AuthenticateViaDiscordCommand
 import com.what_to_watch.user.application.usecase.discordauth.AuthenticateViaDiscordUseCase
 import com.what_to_watch.user.domain.gateway.DiscordOAuthGateway
+import com.what_to_watch.configs.BEARER_AUTH
+import com.what_to_watch.configs.COOKIE_AUTH
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpSession
 import org.springframework.http.HttpHeaders
@@ -95,6 +99,24 @@ class AuthController(
             )
             .build()
     }
+
+    @Operation(
+        summary = "Проверить, авторизован ли пользователь",
+        description = "Ничего не читает из бд — только проверяет access токен из cookie/заголовка " +
+            "через тот же JwtFilter, что и остальные защищённые эндпоинты. " +
+            "204 значит токен валиден, 401 — нет или его вовсе нет. Для данных пользователя " +
+            "используйте GET /users/me.",
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "204", description = "Пользователь авторизован"),
+        ApiResponse(responseCode = "401", description = "Не авторизован"),
+    )
+    @SecurityRequirements(
+        SecurityRequirement(name = COOKIE_AUTH),
+        SecurityRequirement(name = BEARER_AUTH),
+    )
+    @GetMapping("/status")
+    fun status(): ResponseEntity<Void> = ResponseEntity.noContent().build()
 
     private fun generateState(): String {
         val bytes = ByteArray(STATE_BYTES)

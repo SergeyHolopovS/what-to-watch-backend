@@ -6,6 +6,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 @Profile("dev")
@@ -16,12 +17,16 @@ class SeriesSeeder(
 
     private val logger = KotlinLogging.logger {}
 
+    // Несколько сериалов делят одну и ту же студию (например, Netflix) — кэш
+    // не даёт создать по новой записи на каждый такой сериал
+    private val studioIds = mutableMapOf<String, UUID>()
+
     override fun run(vararg args: String) {
         val added = FAKE_SERIES.count { fake ->
             if (seriesRepository.existsByTitle(fake.title)) {
                 false
             } else {
-                val studioId = studioRepository.addStudio(fake.studio).id
+                val studioId = resolveStudioId(fake.studio)
                 seriesRepository.addSeries(
                     fake.title, fake.releaseYear, fake.genre, fake.duration, fake.type, studioId,
                 )
@@ -32,6 +37,11 @@ class SeriesSeeder(
             logger.info { "Добавлено фейковых сериалов: $added" }
         }
     }
+
+    private fun resolveStudioId(name: String): UUID =
+        studioIds.getOrPut(name) {
+            (studioRepository.findByName(name) ?: studioRepository.addStudio(name)).id
+        }
 
     private data class FakeSeries(
         val title: String,

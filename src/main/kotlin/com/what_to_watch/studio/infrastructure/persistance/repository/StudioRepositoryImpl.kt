@@ -18,6 +18,11 @@ class StudioRepositoryImpl(
         return studioMapper.toModel(studioJpaRepository.save(entity))
     }
 
+    override fun findByName(name: String): Studio? =
+        studioJpaRepository.findByName(name)
+            .map(studioMapper::toModel)
+            .orElse(null)
+
     override fun getStudio(id: UUID): Studio? =
         studioJpaRepository.findById(id)
             .map(studioMapper::toModel)

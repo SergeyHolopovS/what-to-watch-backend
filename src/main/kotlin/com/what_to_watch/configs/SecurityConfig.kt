@@ -35,7 +35,7 @@ class SecurityConfig(
                 "/v3/api-docs",
                 "/v3/api-docs/**",
             ).permitAll()
-            .requestMatchers(HttpMethod.GET, "/users/me").authenticated()
+            .requestMatchers(HttpMethod.GET, "/users/me", "/auth/status").authenticated()
             .requestMatchers(HttpMethod.POST, "/cartoons", "/series").authenticated()
             .requestMatchers(HttpMethod.PATCH, "/cartoons/*/rating", "/series/*/rating").authenticated()
             .requestMatchers(HttpMethod.DELETE, "/cartoons/*", "/series/*").authenticated()

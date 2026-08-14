@@ -7,6 +7,8 @@ interface StudioRepository {
 
     fun addStudio(name: String): Studio
 
+    fun findByName(name: String): Studio?
+
     fun getStudio(id: UUID): Studio?
 
     fun getAllStudios(): List<Studio>

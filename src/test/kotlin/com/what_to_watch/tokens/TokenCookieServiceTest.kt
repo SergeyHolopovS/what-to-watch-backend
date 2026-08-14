@@ -34,7 +34,7 @@ class TokenCookieServiceTest {
     private val service = TokenCookieService(jwtConfig, cookieConfig)
 
     @Test
-    fun `access cookie httpOnly, secure и живёт столько же, сколько токен`() {
+    fun `access cookie httpOnly, secure и живёт столько же, сколько refresh токен`() {
         val cookie = service.accessTokenCookie("token-value")
 
         assertEquals("access_token", cookie.name)
@@ -43,7 +43,9 @@ class TokenCookieServiceTest {
         assertTrue(cookie.isSecure)
         assertEquals("Lax", cookie.sameSite)
         assertEquals("/", cookie.path)
-        assertEquals(jwtConfig.accessTokenExpiration, cookie.maxAge.seconds)
+        // Cookie должна пережить истечение access-токена: /refresh читает её
+        // именно после того, как токен внутри стал протухшим
+        assertEquals(jwtConfig.refreshTokenExpiration, cookie.maxAge.seconds)
     }
 
     @Test
